@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>SmartAQ Air Quality Dashboard</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+body{
+font-family: Arial;
+background:#0f172a;
+color:white;
+text-align:center;
+}
+.container{
+width:80%;
+margin:auto;
+}
+.card{
+display:inline-block;
+background:#1e293b;
+padding:20px;
+margin:10px;
+border-radius:10px;
+width:180px;
+}
+.value{
+font-size:30px;
+font-weight:bold;
+}
+canvas{
+background:white;
+border-radius:10px;
+margin-top:30px;
+}
+</style>
+</head>
+<body>
+<h1>SmartAQ Air Quality Monitor</h1>
+<div class="container">
+<div class="card">
+<h3>AQI</h3>
+<div class="value" id="aqi">--</div>
+</div>
+<div class="card">
+<h3>PM2.5</h3>
+<div class="value" id="pm">--</div>
+</div>
+<div class="card">
+<h3>Temperature</h3>
+<div class="value" id="temp">--</div>
+</div>
+<div class="card">
+<h3>Humidity</h3>
+<div class="value" id="hum">--</div>
+</div>
+</div>
+<h2>Air Quality Graph</h2>
+<canvas id="aqChart" width="600" height="300"></canvas>
+<script>
+const ctx = document.getElementById('aqChart').getContext('2d');
+const chart = new Chart(ctx,{
+type:'line',
+data:{
+labels:[],
+datasets:[{
+label:'AQI',
+data:[],
+borderColor:'red',
+borderWidth:2
+}]
+},
+options:{
+scales:{
+y:{
+beginAtZero:true
+}
+}
+}
+});
+function updateDashboard(){
+// Example random values (replace with API data later)
+let aqi=Math.floor(Math.random()*300);
+let pm=Math.floor(Math.random()*200);
+let temp=(25+Math.random()*5).toFixed(1);
+let hum=(50+Math.random()*10).toFixed(1);
+document.getElementById("aqi").innerHTML=aqi;
+document.getElementById("pm").innerHTML=pm+" µg/m³";
+document.getElementById("temp").innerHTML=temp+" °C";
+document.getElementById("hum").innerHTML=hum+" %";
+let time=new Date().toLocaleTimeString();
+chart.data.labels.push(time);
+chart.data.datasets[0].data.push(aqi);
+if(chart.data.labels.length>10){
+chart.data.labels.shift();
+chart.data.datasets[0].data.shift();
+}
+chart.update();
+}
+// update every 5 seconds
+setInterval(updateDashboard,5000);
+</script>
+</body>
+</html>
